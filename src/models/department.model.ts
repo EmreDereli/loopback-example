@@ -21,7 +21,6 @@ export class Department extends Entity {
   })
   manager: string;
 
-
   constructor(data?: Partial<Department>) {
     super(data);
   }
