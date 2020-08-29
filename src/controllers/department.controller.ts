@@ -7,6 +7,7 @@ import {
   getModelSchemaRef,
   param,
   post,
+  put,
   Request,
   requestBody,
   ResponseObject,
@@ -35,7 +36,7 @@ export class DepartmentController {
   @get('/department/{id}', {
     responses: {
       '200': {
-        description: 'TodoList model instance',
+        description: 'Department by ID',
         content: {
           'application/json': {
             schema: getModelSchemaRef(Department, {includeRelations: true}),
@@ -56,19 +57,25 @@ export class DepartmentController {
     return this.departmentRepository.findById(id, filter);
   }
 
+  @put('/department/{id}')
+  async updateDepartment(
+    @param.path.number('id') id: number,
+    @requestBody() department: Department,
+  ) {
+    await this.departmentRepository.replaceById(id, department);
+    return this.departmentRepository.findById(id);
+  }
+
   // Map to `GET /ping`
-  @get('/department', {
-    responses: {
-      '200': DEPARTMENT_RESPONSE,
-    },
-  })
-  department(): object {
-    // Reply with a greeting, the current time, the url, and request headers
+  @get('/department')
+  async findAllDepartments() {
+    const departments = await this.departmentRepository.find({
+      fields: {id: true, name: true},
+    });
     return {
-      greeting: 'Hello from Department Controller',
-      date: new Date(),
-      url: this.req.url,
-      headers: Object.assign({}, this.req.headers),
+      departments: departments,
+      status: 200,
+      description: 'All Departments',
     };
   }
 }
