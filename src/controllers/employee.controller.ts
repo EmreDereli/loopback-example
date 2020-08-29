@@ -168,22 +168,4 @@ export class EmployeeController {
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.employeeRepository.deleteById(id);
   }
-
-  @get('/employees/{id}/salary')
-  async calculateAverageSalaryOfDepartment(
-    @param.path.number('id') id: number,
-  ) {
-    //get employees
-    const data = await this.employeeRepository.find({
-      where: {department: id},
-      fields: {salary: true},
-    });
-
-    //calculate average salary
-    let total = 0;
-    data.map(employee => {
-      total = total + employee.salary;
-    });
-    return {averageSalary: total / data.length};
-  }
 }

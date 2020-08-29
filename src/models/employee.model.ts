@@ -32,11 +32,11 @@ export class Employee extends Entity {
   })
   startDateOfWork: string;
 
-  @property({
-    type: 'number',
-    required: true,
-  })
-  department: number;
+  // @property({
+  //   type: 'number',
+  //   required: true,
+  // })
+  // department: number;
 
   @property({
     type: 'number',
@@ -63,6 +63,11 @@ export class Employee extends Entity {
     required: true,
   })
   id: number;
+
+  @property({
+    type: 'number',
+  })
+  departmentId?: number;
 
   constructor(data?: Partial<Employee>) {
     super(data);
