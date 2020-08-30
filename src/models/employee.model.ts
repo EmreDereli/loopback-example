@@ -45,12 +45,6 @@ export class Employee extends Entity {
 
   @property({
     type: 'number',
-    required: true,
-  })
-  manager: number;
-
-  @property({
-    type: 'number',
     id: true,
     generated: false,
     required: true,
@@ -61,6 +55,11 @@ export class Employee extends Entity {
     type: 'number',
   })
   departmentId?: number;
+
+  @property({
+    type: 'number',
+  })
+  managerId?: number;
 
   constructor(data?: Partial<Employee>) {
     super(data);

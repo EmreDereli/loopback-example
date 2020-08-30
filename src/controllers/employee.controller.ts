@@ -1,11 +1,4 @@
-import {
-  Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
-} from '@loopback/repository';
+import {Count, CountSchema, repository, Where} from '@loopback/repository';
 import {
   del,
   get,
@@ -75,10 +68,12 @@ export class EmployeeController {
       },
     },
   })
-  async find(
-    @param.filter(Employee) filter?: Filter<Employee>,
-  ): Promise<Employee[]> {
-    return this.employeeRepository.find(filter);
+  async find() {
+    const employees = await this.employeeRepository.find();
+    return {
+      employees: employees,
+      greetings: 'Hello from employees get',
+    };
   }
 
   @patch('/employees', {
@@ -117,10 +112,10 @@ export class EmployeeController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Employee, {exclude: 'where'})
-    filter?: FilterExcludingWhere<Employee>,
+    // @param.filter(Employee, {exclude: 'where'})
+    // filter?: FilterExcludingWhere<Employee>,
   ): Promise<Employee> {
-    return this.employeeRepository.findById(id, filter);
+    return this.employeeRepository.findById(id);
   }
 
   @patch('/employees/{id}', {

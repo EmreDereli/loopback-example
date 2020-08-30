@@ -1,19 +1,12 @@
+import {Count, CountSchema, repository, Where} from '@loopback/repository';
 import {
-  Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
-} from '@loopback/repository';
-import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
 } from '@loopback/rest';
 import {Title} from '../models';
@@ -22,7 +15,7 @@ import {TitleRepository} from '../repositories';
 export class TitleController {
   constructor(
     @repository(TitleRepository)
-    public titleRepository : TitleRepository,
+    public titleRepository: TitleRepository,
   ) {}
 
   @post('/titles', {
@@ -39,7 +32,6 @@ export class TitleController {
         'application/json': {
           schema: getModelSchemaRef(Title, {
             title: 'NewTitle',
-            
           }),
         },
       },
@@ -57,9 +49,7 @@ export class TitleController {
       },
     },
   })
-  async count(
-    @param.where(Title) where?: Where<Title>,
-  ): Promise<Count> {
+  async count(@param.where(Title) where?: Where<Title>): Promise<Count> {
     return this.titleRepository.count(where);
   }
 
@@ -78,10 +68,8 @@ export class TitleController {
       },
     },
   })
-  async find(
-    @param.filter(Title) filter?: Filter<Title>,
-  ): Promise<Title[]> {
-    return this.titleRepository.find(filter);
+  async find(): Promise<Title[]> {
+    return this.titleRepository.find();
   }
 
   @patch('/titles', {
@@ -118,11 +106,8 @@ export class TitleController {
       },
     },
   })
-  async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Title, {exclude: 'where'}) filter?: FilterExcludingWhere<Title>
-  ): Promise<Title> {
-    return this.titleRepository.findById(id, filter);
+  async findById(@param.path.number('id') id: number): Promise<Title> {
+    return this.titleRepository.findById(id);
   }
 
   @patch('/titles/{id}', {

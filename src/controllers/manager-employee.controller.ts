@@ -9,60 +9,66 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {Employee, Title} from '../models';
-import {TitleRepository} from '../repositories';
+import {Employee, Manager} from '../models';
+import {ManagerRepository} from '../repositories';
 
-export class TitleEmployeeController {
+export class ManagerEmployeeController {
   constructor(
-    @repository(TitleRepository) protected titleRepository: TitleRepository,
+    @repository(ManagerRepository)
+    protected managerRepository: ManagerRepository,
   ) {}
 
-  @get('/titles/{id}/employees', {
+  @get('/managers/{id}/employees', {
     responses: {
       '200': {
-        description: 'Array of Title has many Employee',
-        // content: {
-        //   'application/json': {
-        //     schema: {type: 'array', items: getModelSchemaRef(Employee)},
-        //   },
-        // },
+        description: 'Array of Manager has many Employee hierarchically (DESC)',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(Employee)},
+          },
+        },
       },
     },
   })
-  async findTitles(@param.path.number('id') id: number) {
-    return this.titleRepository.find();
+  async find(@param.path.number('id') id: number): Promise<Employee[]> {
+    return this.managerRepository.employees(id).find({
+      where: {
+        managerId: id,
+      },
+      order: ['startDateOfWork DESC'],
+    });
   }
 
-  @post('/titles/{id}/employees', {
+  @post('/managers/{id}/employees', {
     responses: {
       '200': {
-        description: 'Title model instance',
+        description: 'Manager model instance',
         content: {'application/json': {schema: getModelSchemaRef(Employee)}},
       },
     },
   })
   async create(
-    @param.path.number('id') id: typeof Title.prototype.id,
+    @param.path.number('id') id: typeof Manager.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(Employee, {
-            title: 'NewEmployeeInTitle',
+            title: 'NewEmployeeInManager',
             exclude: ['id'],
-            optional: ['titleId'],
+            optional: ['managerId'],
           }),
         },
       },
     })
     employee: Omit<Employee, 'id'>,
   ): Promise<Employee> {
-    return this.titleRepository.employees(id).create(employee);
+    return this.managerRepository.employees(id).create(employee);
   }
 
-  @patch('/titles/{id}/employees', {
+  @patch('/managers/{id}/employees', {
     responses: {
       '200': {
-        description: 'Title.Employee PATCH success count',
+        description: 'Manager.Employee PATCH success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -80,13 +86,13 @@ export class TitleEmployeeController {
     @param.query.object('where', getWhereSchemaFor(Employee))
     where?: Where<Employee>,
   ): Promise<Count> {
-    return this.titleRepository.employees(id).patch(employee, where);
+    return this.managerRepository.employees(id).patch(employee, where);
   }
 
-  @del('/titles/{id}/employees', {
+  @del('/managers/{id}/employees', {
     responses: {
       '200': {
-        description: 'Title.Employee DELETE success count',
+        description: 'Manager.Employee DELETE success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -96,6 +102,6 @@ export class TitleEmployeeController {
     @param.query.object('where', getWhereSchemaFor(Employee))
     where?: Where<Employee>,
   ): Promise<Count> {
-    return this.titleRepository.employees(id).delete(where);
+    return this.managerRepository.employees(id).delete(where);
   }
 }

@@ -6,3 +6,5 @@ export * from './department-employee.controller';
 export * from './title.controller';
 export * from './department-title.controller';
 export * from './title-employee.controller';
+export * from './manager-employee.controller';
+export * from './manager.controller';
