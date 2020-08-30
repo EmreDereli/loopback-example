@@ -1,19 +1,18 @@
 import {
   Count,
   CountSchema,
-  Filter,
   FilterExcludingWhere,
   repository,
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
 } from '@loopback/rest';
 import {Office} from '../models';
@@ -22,7 +21,7 @@ import {OfficeRepository} from '../repositories';
 export class OfficeController {
   constructor(
     @repository(OfficeRepository)
-    public officeRepository : OfficeRepository,
+    public officeRepository: OfficeRepository,
   ) {}
 
   @post('/offices', {
@@ -39,7 +38,6 @@ export class OfficeController {
         'application/json': {
           schema: getModelSchemaRef(Office, {
             title: 'NewOffice',
-            
           }),
         },
       },
@@ -57,9 +55,7 @@ export class OfficeController {
       },
     },
   })
-  async count(
-    @param.where(Office) where?: Where<Office>,
-  ): Promise<Count> {
+  async count(@param.where(Office) where?: Where<Office>): Promise<Count> {
     return this.officeRepository.count(where);
   }
 
@@ -78,10 +74,8 @@ export class OfficeController {
       },
     },
   })
-  async find(
-    @param.filter(Office) filter?: Filter<Office>,
-  ): Promise<Office[]> {
-    return this.officeRepository.find(filter);
+  async find(): Promise<Office[]> {
+    return this.officeRepository.find();
   }
 
   @patch('/offices', {
@@ -120,7 +114,8 @@ export class OfficeController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Office, {exclude: 'where'}) filter?: FilterExcludingWhere<Office>
+    @param.filter(Office, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Office>,
   ): Promise<Office> {
     return this.officeRepository.findById(id, filter);
   }
@@ -142,8 +137,9 @@ export class OfficeController {
       },
     })
     office: Office,
-  ): Promise<void> {
+  ): Promise<Office> {
     await this.officeRepository.updateById(id, office);
+    return office;
   }
 
   @put('/offices/{id}', {

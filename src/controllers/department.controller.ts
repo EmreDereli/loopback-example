@@ -1,10 +1,8 @@
 // Uncomment these imports to begin using these cool features!
 import {inject} from '@loopback/core';
-import {FilterExcludingWhere, repository} from '@loopback/repository';
+import {repository} from '@loopback/repository';
 import {
   get,
-  getFilterSchemaFor,
-  getModelSchemaRef,
   param,
   post,
   put,
@@ -28,7 +26,13 @@ export class DepartmentController {
     public departmentRepository: DepartmentRepository,
   ) {}
 
-  @post('/department')
+  @post('/department', {
+    responses: {
+      '200': {
+        description: 'Department Create',
+      },
+    },
+  })
   async createDepartment(@requestBody() department: Department) {
     return this.departmentRepository.create(department);
   }
@@ -37,27 +41,23 @@ export class DepartmentController {
     responses: {
       '200': {
         description: 'Department by ID',
-        content: {
-          'application/json': {
-            schema: getModelSchemaRef(Department, {includeRelations: true}),
-          },
-        },
       },
     },
   })
   async findDepartmentById(
     @param.path.number('id') id: number,
-    @param.query.object(
-      'filter',
-      getFilterSchemaFor(Department, {exclude: 'where'}),
-    )
-    filter?: FilterExcludingWhere<Department>,
   ): Promise<Department> {
     // data retrieving logic goes here
-    return this.departmentRepository.findById(id, filter);
+    return this.departmentRepository.findById(id);
   }
 
-  @put('/department/{id}')
+  @put('/department/{id}', {
+    responses: {
+      '200': {
+        description: 'Department Update',
+      },
+    },
+  })
   async updateDepartment(
     @param.path.number('id') id: number,
     @requestBody() department: Department,
@@ -67,7 +67,13 @@ export class DepartmentController {
   }
 
   // Map to `GET /ping`
-  @get('/department')
+  @get('/department', {
+    responses: {
+      '200': {
+        description: 'Array of all Departments',
+      },
+    },
+  })
   async findAllDepartments() {
     const departments = await this.departmentRepository.find({
       fields: {id: true, name: true},

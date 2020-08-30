@@ -32,23 +32,16 @@ export class Employee extends Entity {
   })
   startDateOfWork: string;
 
-  // @property({
-  //   type: 'number',
-  //   required: true,
-  // })
-  // department: number;
+  @property({
+    type: 'number',
+  })
+  titleId?: number;
 
   @property({
     type: 'number',
     required: true,
   })
   salary: number;
-
-  @property({
-    type: 'number',
-    required: true,
-  })
-  title: number;
 
   @property({
     type: 'number',

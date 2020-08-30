@@ -5,3 +5,4 @@ export * from './employee.controller';
 export * from './department-employee.controller';
 export * from './title.controller';
 export * from './department-title.controller';
+export * from './title-employee.controller';
