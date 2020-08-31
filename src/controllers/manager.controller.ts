@@ -1,19 +1,11 @@
+import {Count, CountSchema, repository, Where} from '@loopback/repository';
 import {
-  Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
-} from '@loopback/repository';
-import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
-  patch,
+  param,
+  post,
   put,
-  del,
   requestBody,
 } from '@loopback/rest';
 import {Manager} from '../models';
@@ -22,7 +14,7 @@ import {ManagerRepository} from '../repositories';
 export class ManagerController {
   constructor(
     @repository(ManagerRepository)
-    public managerRepository : ManagerRepository,
+    public managerRepository: ManagerRepository,
   ) {}
 
   @post('/managers', {
@@ -39,7 +31,6 @@ export class ManagerController {
         'application/json': {
           schema: getModelSchemaRef(Manager, {
             title: 'NewManager',
-            
           }),
         },
       },
@@ -57,9 +48,7 @@ export class ManagerController {
       },
     },
   })
-  async count(
-    @param.where(Manager) where?: Where<Manager>,
-  ): Promise<Count> {
+  async count(@param.where(Manager) where?: Where<Manager>): Promise<Count> {
     return this.managerRepository.count(where);
   }
 
@@ -78,32 +67,8 @@ export class ManagerController {
       },
     },
   })
-  async find(
-    @param.filter(Manager) filter?: Filter<Manager>,
-  ): Promise<Manager[]> {
-    return this.managerRepository.find(filter);
-  }
-
-  @patch('/managers', {
-    responses: {
-      '200': {
-        description: 'Manager PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async updateAll(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Manager, {partial: true}),
-        },
-      },
-    })
-    manager: Manager,
-    @param.where(Manager) where?: Where<Manager>,
-  ): Promise<Count> {
-    return this.managerRepository.updateAll(manager, where);
+  async find(): Promise<Manager[]> {
+    return this.managerRepository.find();
   }
 
   @get('/managers/{id}', {
@@ -118,32 +83,8 @@ export class ManagerController {
       },
     },
   })
-  async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Manager, {exclude: 'where'}) filter?: FilterExcludingWhere<Manager>
-  ): Promise<Manager> {
-    return this.managerRepository.findById(id, filter);
-  }
-
-  @patch('/managers/{id}', {
-    responses: {
-      '204': {
-        description: 'Manager PATCH success',
-      },
-    },
-  })
-  async updateById(
-    @param.path.number('id') id: number,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Manager, {partial: true}),
-        },
-      },
-    })
-    manager: Manager,
-  ): Promise<void> {
-    await this.managerRepository.updateById(id, manager);
+  async findById(@param.path.number('id') id: number): Promise<Manager> {
+    return this.managerRepository.findById(id);
   }
 
   @put('/managers/{id}', {

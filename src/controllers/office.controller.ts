@@ -1,16 +1,9 @@
-import {
-  Count,
-  CountSchema,
-  FilterExcludingWhere,
-  repository,
-  Where,
-} from '@loopback/repository';
+import {Count, CountSchema, repository, Where} from '@loopback/repository';
 import {
   del,
   get,
   getModelSchemaRef,
   param,
-  patch,
   post,
   put,
   requestBody,
@@ -78,28 +71,6 @@ export class OfficeController {
     return this.officeRepository.find();
   }
 
-  @patch('/offices', {
-    responses: {
-      '200': {
-        description: 'Office PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async updateAll(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Office, {partial: true}),
-        },
-      },
-    })
-    office: Office,
-    @param.where(Office) where?: Where<Office>,
-  ): Promise<Count> {
-    return this.officeRepository.updateAll(office, where);
-  }
-
   @get('/offices/{id}', {
     responses: {
       '200': {
@@ -112,34 +83,8 @@ export class OfficeController {
       },
     },
   })
-  async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Office, {exclude: 'where'})
-    filter?: FilterExcludingWhere<Office>,
-  ): Promise<Office> {
-    return this.officeRepository.findById(id, filter);
-  }
-
-  @patch('/offices/{id}', {
-    responses: {
-      '204': {
-        description: 'Office PATCH success',
-      },
-    },
-  })
-  async updateById(
-    @param.path.number('id') id: number,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Office, {partial: true}),
-        },
-      },
-    })
-    office: Office,
-  ): Promise<Office> {
-    await this.officeRepository.updateById(id, office);
-    return office;
+  async findById(@param.path.number('id') id: number): Promise<Office> {
+    return this.officeRepository.findById(id);
   }
 
   @put('/offices/{id}', {

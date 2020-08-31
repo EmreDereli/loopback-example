@@ -4,7 +4,6 @@ import {
   get,
   getModelSchemaRef,
   param,
-  patch,
   post,
   put,
   requestBody,
@@ -72,28 +71,6 @@ export class TitleController {
     return this.titleRepository.find();
   }
 
-  @patch('/titles', {
-    responses: {
-      '200': {
-        description: 'Title PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async updateAll(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Title, {partial: true}),
-        },
-      },
-    })
-    title: Title,
-    @param.where(Title) where?: Where<Title>,
-  ): Promise<Count> {
-    return this.titleRepository.updateAll(title, where);
-  }
-
   @get('/titles/{id}', {
     responses: {
       '200': {
@@ -108,27 +85,6 @@ export class TitleController {
   })
   async findById(@param.path.number('id') id: number): Promise<Title> {
     return this.titleRepository.findById(id);
-  }
-
-  @patch('/titles/{id}', {
-    responses: {
-      '204': {
-        description: 'Title PATCH success',
-      },
-    },
-  })
-  async updateById(
-    @param.path.number('id') id: number,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Title, {partial: true}),
-        },
-      },
-    })
-    title: Title,
-  ): Promise<void> {
-    await this.titleRepository.updateById(id, title);
   }
 
   @put('/titles/{id}', {
